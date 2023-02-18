@@ -1,0 +1,56 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+
+  db:
+    image: mysql
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    # command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: <tcgfkjd2019@Ujhyfr2022
+    container_name: db0
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    container_name: adminer0
+
+#  parseworker:
+#    image: znetdeveloper/parseworker
+#    restart: always
+#    depends_on:
+#      - db
+#      - adminer
+#      - redis
+#    volumes:
+#      - /var/opt/parseworker4
+#    container_name: parse0
+
+
+
+  redis-stack:
+    image: redis/redis-stack-server:latest
+    restart: always
+    ports:
+      - 6379:6379
+    depends_on:
+      - db
+    volumes:
+      - /var/opt/redisstack
+    container_name: redisstack0
+
+  
+  redistestclient: 
+    image: znetdeveloper/redistestclient
+    restart: always  
+    depends_on:
+      - db
+      - redis-stack
+    volumes:
+      - /var/opt/redisclient0
+    container_name: redisclient0
